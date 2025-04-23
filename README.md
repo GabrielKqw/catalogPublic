@@ -1,98 +1,170 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# KankosGame - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este é o backend do projeto KankosGame, um catálogo de jogos. O backend foi desenvolvido utilizando NestJS, Prisma ORM e PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologias Utilizadas
 
-## Description
+- **NestJS**: Framework para construção de aplicações server-side eficientes e escaláveis em Node.js
+- **Prisma ORM**: ORM (Object-Relational Mapping) para Node.js e TypeScript
+- **PostgreSQL**: Sistema de gerenciamento de banco de dados relacional
+- **JWT**: JSON Web Tokens para autenticação
+- **Bcrypt**: Para criptografia de senhas
+- **Axios**: Cliente HTTP para integração com APIs externas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Estrutura do Projeto
 
-## Project setup
-
-```bash
-$ yarn install
+```
+backend/
+├── src/
+│   ├── auth/                  # Módulo de autenticação
+│   │   ├── auth.controller.ts # Controlador para rotas de autenticação
+│   │   ├── auth.module.ts     # Módulo de autenticação
+│   │   ├── auth.service.ts    # Serviço de autenticação
+│   │   ├── constants.ts       # Constantes para JWT
+│   │   ├── jwt.strategy.ts    # Estratégia JWT para Passport
+│   │   ├── jwt-auth.guard.ts  # Guard para rotas protegidas
+│   │   ├── local.strategy.ts  # Estratégia local para Passport
+│   │   └── local-auth.guard.ts# Guard para autenticação local
+│   ├── users/                 # Módulo de usuários
+│   │   ├── users.module.ts    # Módulo de usuários
+│   │   └── users.service.ts   # Serviço de usuários
+│   ├── games/                 # Módulo de jogos
+│   │   ├── games.controller.ts# Controlador para rotas de jogos
+│   │   ├── games.module.ts    # Módulo de jogos
+│   │   ├── games.service.ts   # Serviço de jogos
+│   │   └── comments.controller.ts # Controlador para comentários
+│   ├── app.controller.ts      # Controlador principal
+│   ├── app.module.ts          # Módulo principal
+│   ├── app.service.ts         # Serviço principal
+│   └── main.ts                # Ponto de entrada da aplicação
+├── prisma/                    # Configuração do Prisma
+│   └── schema.prisma          # Schema do banco de dados
+├── test/                      # Testes
+├── .env                       # Variáveis de ambiente
+├── nest-cli.json              # Configuração do NestJS CLI
+├── package.json               # Dependências e scripts
+└── tsconfig.json              # Configuração do TypeScript
 ```
 
-## Compile and run the project
+## Modelos de Dados
 
+### User
+- `id`: Identificador único
+- `email`: Email do usuário (único)
+- `username`: Nome de usuário (único)
+- `password`: Senha criptografada
+- `createdAt`: Data de criação
+- `updatedAt`: Data de atualização
+- `comments`: Relacionamento com comentários
+
+### Game
+- `id`: Identificador único
+- `title`: Título do jogo
+- `description`: Descrição do jogo
+- `imageUrl`: URL da imagem do jogo
+- `releaseDate`: Data de lançamento
+- `developer`: Desenvolvedor
+- `publisher`: Publicador
+- `genres`: Gêneros do jogo
+- `apiId`: ID do jogo na API externa (único)
+- `createdAt`: Data de criação
+- `updatedAt`: Data de atualização
+- `comments`: Relacionamento com comentários
+
+### Comment
+- `id`: Identificador único
+- `content`: Conteúdo do comentário
+- `rating`: Avaliação (1-5)
+- `createdAt`: Data de criação
+- `updatedAt`: Data de atualização
+- `userId`: ID do usuário que fez o comentário
+- `gameId`: ID do jogo comentado
+
+## API Endpoints
+
+### Autenticação
+- `POST /auth/register`: Registrar novo usuário
+  - Body: `{ email, username, password }`
+- `POST /auth/login`: Login de usuário
+  - Body: `{ email, password }`
+
+### Jogos
+- `GET /games`: Listar todos os jogos
+  - Query params: `platform`, `category`, `sort-by`
+- `GET /games/:id`: Obter detalhes de um jogo específico
+- `GET /games/search`: Pesquisar jogos
+  - Query params: `term`
+
+### Comentários
+- `POST /comments`: Adicionar comentário (requer autenticação)
+  - Body: `{ gameId, content, rating }`
+- `DELETE /comments/:id`: Excluir comentário (requer autenticação)
+
+## Integração com API Externa
+
+O backend integra-se com a FreeToGame API para obter dados de jogos. A integração é feita através do serviço `GamesService`, que busca jogos da API externa e os armazena no banco de dados local para futuras consultas.
+
+## Autenticação e Autorização
+
+O sistema utiliza JWT (JSON Web Tokens) para autenticação. Quando um usuário faz login, um token JWT é gerado e retornado ao cliente. Este token deve ser incluído no cabeçalho `Authorization` das requisições subsequentes para acessar rotas protegidas.
+
+## Configuração e Instalação
+
+### Pré-requisitos
+- Node.js (v14 ou superior)
+- PostgreSQL
+- Yarn
+
+### Instalação
+
+1. Clone o repositório
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+git clone <url-do-repositorio>
+cd game-catalog/backend/backend-app
 ```
 
-## Run tests
-
+2. Instale as dependências
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+yarn install
 ```
 
-## Deployment
+3. Configure as variáveis de ambiente
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+```
+DATABASE_URL="postgresql://usuario:senha@localhost:5432/gamecatalog?schema=public"
+```
+Substitua `usuario` e `senha` pelas suas credenciais do PostgreSQL.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+4. Execute as migrações do Prisma
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+npx prisma migrate dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+5. Gere o cliente Prisma
+```bash
+npx prisma generate
+```
 
-## Resources
+6. Inicie o servidor de desenvolvimento
+```bash
+yarn start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+O servidor estará disponível em `http://localhost:3000`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Scripts Disponíveis
 
-## Support
+- `yarn start`: Inicia o servidor em modo de produção
+- `yarn start:dev`: Inicia o servidor em modo de desenvolvimento com hot-reload
+- `yarn start:debug`: Inicia o servidor em modo de debug
+- `yarn build`: Compila o projeto
+- `yarn test`: Executa os testes unitários
+- `yarn test:e2e`: Executa os testes end-to-end
+- `yarn test:cov`: Executa os testes com cobertura
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Considerações de Segurança
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Senhas são criptografadas usando bcrypt antes de serem armazenadas no banco de dados
+- Autenticação é feita usando JWT com expiração de 24 horas
+- Rotas sensíveis são protegidas por guards de autenticação
+- Validação de entrada é feita para prevenir injeção de SQL e outros ataques
